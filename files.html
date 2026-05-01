@@ -21,6 +21,7 @@
       <div class="nav-right">
     <div id="welcomeUser" class="welcome-text"></div>
     <div class="nav-buttons">
+      <a href="#" onclick="openProfile()">My Profile</a>
       <a href="https://us-east-1lhq60fyfx.auth.us-east-1.amazoncognito.com/logout?client_id=4a1nqu87qe6qrlefhhoi4ht2r9&logout_uri=https://d2q93x200huoh6.cloudfront.net">Logout</a>
     </div>
   </nav>
@@ -692,11 +693,131 @@ function showWelcomeMessage() {
     welcomeDiv.innerText = `Welcome, ${username}`;
   }
 }
-
 </script>
 
+<!--My Profile behaviour-->
+<script>
+function openProfile() {
+  const idToken = localStorage.getItem("id_token");
+  if (!idToken) return;
 
+  const payload = JSON.parse(atob(idToken.split(".")[1]));
+  const email = payload.email;
 
+  let username = email.split("@")[0];
+  username = username.replace(/[0-9]/g, "").replace(/\./g, " ");
+  username = username
+    .split(" ")
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+
+  const avatar = document.getElementById("profileAvatar");
+
+  // ONLY set letter if NO DP exists
+  const dp = localStorage.getItem("dp_url");
+
+  if (!dp) {
+    const firstLetter = username.charAt(0).toUpperCase();
+    avatar.innerText = firstLetter;
+  } else {
+    avatar.style.backgroundImage = `url(${dp})`;
+    avatar.style.backgroundSize = "cover";
+    avatar.style.backgroundPosition = "center";
+    avatar.innerText = "";
+  }
+  document.getElementById("profileName").innerText = `Name: ${username}`;
+  document.getElementById("profileEmail").innerText = `Email: ${email}`;
+  document.getElementById("profilePanel").classList.add("open");
+}
+</script>
+
+<!--Display picture behaviour-->
+<script>
+// Open/Close DP modal
+function openDpModal() {
+  document.getElementById("dpModal").classList.remove("hidden");
+}
+
+function closeDpModal() {
+  document.getElementById("dpModal").classList.add("hidden");
+}
+
+// View DP
+function viewDp() {
+  const url = localStorage.getItem("dp_url");
+
+  if (!url) {
+    alert("No profile picture uploaded yet");
+    return;
+  }
+
+  document.getElementById("dpImage").src = url;
+  document.getElementById("dpPreview").classList.remove("hidden");
+}
+
+function closeDpPreview() {
+  document.getElementById("dpPreview").classList.add("hidden");
+}
+
+async function uploadDp() {
+  const file = document.getElementById("dpInput").files[0];
+  if (!file) return;
+
+  const token = localStorage.getItem("id_token");
+
+  try {
+    // STEP 1: Get presigned URL
+    const res = await fetch("https://xv1qd0hqgh.execute-api.us-east-1.amazonaws.com/dev/DP", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type
+      })
+    });
+
+    if (!res.ok) {
+      alert("Failed to get upload URL");
+      return;
+    }
+
+    const { uploadUrl, fileUrl } = await res.json();
+
+    // STEP 2: Upload to S3
+    const uploadRes = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": file.type
+      },
+      body: file
+    });
+
+    if (!uploadRes.ok) {
+      alert("Upload failed");
+      return;
+    }
+
+    // STEP 3: Update UI instantly
+    const avatar = document.getElementById("profileAvatar");
+    avatar.style.backgroundImage = `url(${fileUrl})`;
+    avatar.style.backgroundSize = "cover";
+    avatar.style.backgroundPosition = "center";
+    avatar.innerText = "";
+
+    // STEP 4: Save locally (temporary)
+    localStorage.setItem("dp_url", fileUrl);
+
+    alert("Profile picture updated!");
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong");
+  }
+}
+</script>
 
 <!--function to properly load every section-->
 <script>
@@ -711,7 +832,18 @@ function showWelcomeMessage() {
       "&scope=email+openid" +
       "&redirect_uri=https://d2q93x200huoh6.cloudfront.net/files.html";
   }
+  }
+function loadDp() {
+  const url = localStorage.getItem("dp_url");
+  if (!url) return;
+
+  const avatar = document.getElementById("profileAvatar");
+  avatar.style.backgroundImage = `url(${url})`;
+  avatar.style.backgroundSize = "cover";
+  avatar.style.backgroundPosition = "center";
+  avatar.innerText = "";
 }
+
 
   async function init() {
   await handleLogin();
@@ -720,10 +852,15 @@ function showWelcomeMessage() {
   await loadPrivateFiles();
   await loadMarketplaceFiles();
   await loadSharedToMeFiles();
+  loadDp();
 }
 
 init();
 </script>
+
+<!--###########################-->
+           <!--MODALS-->
+<!--###########################-->
 
 <!-- Share Modal -->
 <div id="shareModal" class="share-modal hidden">
@@ -745,6 +882,56 @@ init();
   </div>
 </div>
 
+<!--My Profile Section Modal-->
+<div id="profilePanel" class="profile-panel">
+  <div class="profile-header">
+    <h3>My Profile</h3>
+    <button onclick="closeProfile()">✕</button>
+  </div>
+
+  <div class="profile-content">
+
+    <!-- Avatar -->
+    <div class="profile-avatar" id="profileAvatar" onclick="openDpModal()">R</div>
+
+    <!-- Info -->
+    <div class="profile-info">
+      <p class="name" id="profileName">Rohit Singh</p>
+      <p id="profileEmail">rohit@email.com</p>
+      <p>Plan: Free</p>
+      <p>Storage Used: 150 MB</p>
+    </div>
+
+    <div class="profile-divider"></div>
+
+    <!-- Footer (logout at bottom) -->
+    <div class="profile-footer">
+      <button onclick="logout()" class="logout-btn">Logout</button>
+    </div>
+
+  </div>
+</div>
+
+<!--Display picture modal-->
+<div id="dpModal" class="share-modal hidden">
+  <div class="share-card">
+    <h3>Profile Picture</h3>
+
+    <button onclick="viewDp()">View</button>
+    <button onclick="document.getElementById('dpInput').click()">Change</button>
+
+    <input type="file" id="dpInput" accept="image/*" hidden onchange="uploadDp()" />
+
+    <button class="close-btn" onclick="closeDpModal()">✕</button>
+  </div>
+</div>
+<!--DP Preview Modal-->
+<div id="dpPreview" class="share-modal hidden">
+  <div class="share-card">
+    <img id="dpImage" style="width:100%; border-radius:12px;" />
+    <button class="close-btn" onclick="closeDpPreview()">✕</button>
+  </div>
+</div>
 
 </body>
 </html>
