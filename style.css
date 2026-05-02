@@ -139,6 +139,7 @@ body {
   height: 200px;
   padding: 20px;
   position: relative;
+  z-index: 1;
   color: #0f172a;
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(25px);
@@ -153,6 +154,7 @@ body {
 }
 
 .file-card:hover {
+  z-index: 20;
   transform: translateY(-8px);
   box-shadow: 0 10px 40px rgba(59, 130, 246, 0.25);
 }
@@ -325,7 +327,7 @@ body {
     }
     .file-menu {
   position: relative;
-  float: right;
+  margin-left: auto;
 }
 
 .menu-btn {
@@ -352,7 +354,7 @@ body {
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   overflow: hidden;
-  z-index: 100;
+  z-index: 999;
 }
 
 .menu-dropdown button {
@@ -578,4 +580,25 @@ body {
 .logout-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(255, 77, 77, 0.4);
+}
+
+/*Display Picture CSSS*/
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  font-size: 0.9rem;
+  overflow: hidden;
 }
