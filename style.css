@@ -17,9 +17,11 @@
       padding: 0;
       box-sizing: border-box;
       font-family: "Segoe UI", sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
 body {
+  width:100%;
   margin: 0;
   min-height: 100vh;
   color: white;
@@ -125,11 +127,6 @@ body {
       margin-bottom: 20px;
     }
 
-    .file-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, 260px);
-      gap: 24px;
-    }
 
 
 .file-card {
@@ -473,7 +470,6 @@ body {
   height: 100%;
   z-index: 1000;
 
-  /* Match your glass style */
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
@@ -601,4 +597,157 @@ body {
   color: white;
   font-size: 0.9rem;
   overflow: hidden;
+}
+
+
+/* ================= RESPONSIVE FILE GRID ================= */
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+/* Make cards flexible */
+.file-card {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Prevent long filenames from breaking layout */
+.file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width: 1024px) {
+
+  .navbar,
+  .page-header,
+  .section {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .section {
+    overflow-x: auto;
+  }
+
+  .file-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .profile-panel {
+    width: 320px;
+  }
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .nav-right {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .nav-buttons {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-buttons a {
+    flex: 1;
+    text-align: center;
+  }
+
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .page-header p {
+    font-size: 0.9rem;
+  }
+
+  .page-header button {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .section {
+    padding: 15px;
+    margin: 15px;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .file-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+
+  .file-card {
+    height: auto;
+    min-height: 180px;
+  }
+
+  .share-card {
+    width: 92%;
+    padding: 20px;
+  }
+
+  .profile-panel {
+    width: 100%;
+    right: -100%;
+  }
+
+  .welcome-text {
+    font-size: 0.85rem;
+  }
+}
+
+/* ================= VERY SMALL DEVICES ================= */
+
+@media (max-width: 480px) {
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .page-header {
+    padding: 15px;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .file-card {
+    padding: 16px;
+  }
+
+  .menu-dropdown {
+    right: 0;
+    left: auto;
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
