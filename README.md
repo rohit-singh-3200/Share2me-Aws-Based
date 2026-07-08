@@ -40,33 +40,45 @@ This project showcases real-world cloud engineering concepts including:
 
 # 📸 Screenshots
 
+##  Landing Page
+
+<img width="1903" height="1020" alt="image" src="https://github.com/user-attachments/assets/e263305f-ac8c-406b-966a-a7d7ee56a09f" />
+
+
+---
+
 ## 🔑 Login Page
 
-(Add Screenshot)
+<img width="1911" height="938" alt="image" src="https://github.com/user-attachments/assets/d9fddddd-c2fd-4355-9bad-b737c796c86d" />
+
 
 ---
 
 ## 🏠 Dashboard
 
-(Add Screenshot)
+<img width="1868" height="939" alt="image" src="https://github.com/user-attachments/assets/4167e51f-e353-4776-a719-613c2681ddbb" />
+
 
 ---
 
 ## 📤 Upload File
 
-(Add Screenshot)
+<img width="1900" height="1074" alt="image" src="https://github.com/user-attachments/assets/7bd888a3-79fe-4947-9d1b-a2eb060f6ede" />
+
 
 ---
 
 ## 📁 File Manager
 
-(Add Screenshot)
+<img width="1911" height="941" alt="image" src="https://github.com/user-attachments/assets/5ad7810f-c3a9-462b-9ff5-8f81189ae3c1" />
+
 
 ---
 
 ## 📥 Download Files
 
-(Add Screenshot)
+<img width="1911" height="941" alt="image" src="https://github.com/user-attachments/assets/7c827d47-dbd0-4be9-a972-dc1900d50a16" />
+
 
 ---
 
